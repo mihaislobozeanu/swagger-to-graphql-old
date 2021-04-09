@@ -11,6 +11,7 @@ const primitiveTypes = {
   date: graphql.GraphQLString,
   integer: graphql.GraphQLInt,
   number: graphql.GraphQLInt,
+  float: graphql.GraphQLFloat,
   boolean: graphql.GraphQLBoolean
 };
 
@@ -125,9 +126,15 @@ const jsonSchemaTypeToGraphQL = (title: string, jsonSchema: JSONSchemaType, sche
 const getPrimitiveTypes = (jsonSchema: JSONSchemaType): GraphQLScalarType => {
   let jsonType = jsonSchema.type;
   const format = jsonSchema.format;
-  if (format === 'int64') {
-    jsonType = 'string';
+  if(jsonType === 'number'){
+    if (format === 'int64') {
+      jsonType = 'string';
+    }
+    if (!format || format === 'float' || format === 'double') {
+      jsonType = 'float';
+    }
   }
+
   const type = primitiveTypes[jsonType];
   if (!type) {
     throw new Error(`Cannot build primitive type "${jsonType}"`);

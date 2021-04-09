@@ -48,7 +48,12 @@ const fetchSchema = (schemaurl: string) => {
 	var options = {
 		uri: schemaurl,
 		transform: function (body) {
-			return JSON.parse(body);
+      try{
+        return JSON.parse(body);
+      }
+      catch(err){
+        throw new Error(err.message + ', url: ' + schemaurl, ', body: ' + body);
+      }
 		}
 	};
 	return rp(options);
